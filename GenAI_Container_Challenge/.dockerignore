@@ -1,0 +1,43 @@
+# Version control
+.git
+.gitignore
+
+# Dev tooling / IDE
+.devcontainer
+.vscode
+*.code-workspace
+
+# Python artefacts
+__pycache__
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info
+.eggs
+dist
+build
+*.whl
+
+# Virtual environments
+.venv
+venv
+env
+
+# Test / lint artefacts
+.pytest_cache
+.mypy_cache
+.ruff_cache
+htmlcov
+.coverage
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Secrets / environment files
+.env
+*.env.*
+
+# SBOM / scan outputs
+sbom.json
+trivy-report.json

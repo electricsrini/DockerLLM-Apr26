@@ -1,0 +1,73 @@
+{
+  "name": "GenAI API Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+
+  // Forward the API port so you can test from the host browser / curl
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": { "label": "GenAI API", "onAutoForward": "notify" }
+  },
+
+  // Install Python deps and Docker CLI tools on container creation
+  "postCreateCommand": "pip install --user -r app/requirements.txt",
+
+  // Mount the Docker socket so Docker commands work inside the devcontainer
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+
+  "features": {
+    // Docker-in-Docker gives access to docker, buildx, and docker compose
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "enableNonRootDocker": true,
+      "dockerDashComposeVersion": "v2"
+    },
+    // GitHub CLI – useful for pushing images and managing repos
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Python dev
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "charliermarsh.ruff",
+
+        // Docker authoring & management
+        "ms-azuretools.vscode-docker",
+
+        // REST client for testing POST /generate interactively
+        "humao.rest-client",
+
+        // YAML / JSON / TOML
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
+
+        // GitHub Copilot
+        "github.copilot",
+        "github.copilot-chat"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "editor.formatOnSave": true,
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+        "docker.dockerPath": "/usr/local/bin/docker"
+      }
+    }
+  },
+
+  // ── Security tooling available at the command line ─────────────────────────
+  // After the container starts, run:
+  //   docker scout quickview   – Scout vulnerability overview
+  //   docker sbom <image>      – Generate SBOM (requires Docker Desktop 4.21+)
+  //   trivy image <image>      – Full vulnerability scan (installed via onCreateCommand)
+  "onCreateCommand": "curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.51.1 && echo 'Trivy installed' || echo 'Trivy install skipped'",
+
+  // Run as non-root inside the devcontainer
+  "remoteUser": "vscode"
+}
